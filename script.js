@@ -45,58 +45,33 @@ $(document).ready(function () {
 
         switch (currentClass){
             case 'nav_button':{
-                handleNavButton(jQuery(this).attr('id'));
+                handleNavButtonInput(jQuery(this).attr('id'));
                 return;
             } case 'math_button':{
                 handleMathButtonInput(currentString, currentArray);
                 console.log("Display", currentArray[0]);
                 console.log("Eval", currentArray[1]);
                 return;
+            } case 'special_button'{
+                handleSpecialButtonInput(currentString);
             }
         }
-
-        switch (currentString) {
-            case "ENTER": {
-                console.log(eval(currentArray[1].join("")));
-                break;
-            } case "CLEAR": {
-                clearArray(currentArray);
-                break;
-            } case "RESET": {
-                resetAllArrays();
-                break;
-            } case "AXES": {
-                console.log("TODO");
-                break;
-            } case "SCROLL": {
-                console.log("TODO");
-                break;
-            } case "GRAPH": {
-                console.log("TODO");
-                break;
-            } case "F(X)": {
-                console.log("TODO");
-                break;
-            }
-        }
-
-
     });
 
-    function handleNavButton(buttonID){
+    function handleNavButtonInput(buttonID){
         switch (buttonID){
             case 'left_button': {
-                movePointer(-1);
+                moveCursor(-1);
                 break;
             } case 'right_button': {
-                movePointer(1);
+                moveCursor(1);
                 break;
             }
         }
     }
 
     // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
-    function movePointer(direction){
+    function moveCursor(direction){
         currentArray[2] += direction;
         if (currentArray[2] >= currentArray[1].length) {
             currentArray[2] = currentArray[1].length - 1;
@@ -111,6 +86,45 @@ $(document).ready(function () {
         console.log("Display", currentArray[0]);
         console.log("Eval", currentArray[1]);
     }
+
+    function handleSpecialButtonInput(buttonContent){
+        switch (buttonContent) {
+            case "ENTER": {
+                console.log(eval(currentArray[1].join("")));
+                break;
+            } case "CLEAR": {
+                clearArray(currentArray);
+                break;
+            } case "RESET": {
+                resetAllArrays();
+                break;
+            } case "DEL": {
+                deleteAtCursor();
+                break;
+            } case "SCROLL": {
+                console.log("TODO");
+                break;
+            } case "GRAPH": {
+                console.log("TODO");
+                break;
+            } case "F(X)": {
+                console.log("TODO");
+                break;
+            } case "AXES": {
+                console.log("TODO");
+                break;
+            }
+        }
+    }
+
+    function deleteAtCursor(){
+        index = currentArray[2];
+        currentArray[0].splice(index + 1, 1);
+        currentArray[1].splice(index , 1);
+        moveCursor(0);
+    }
+
+    
 
     function handleMathButtonInput(buttonString, currentArray) {
         displayArray = currentArray[0];
