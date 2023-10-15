@@ -28,10 +28,10 @@ $(document).ready(function () {
         'sqrt': "Math.sqrt("
     }
 
-    var calculationArray = [['|'], [], 0];
-    var functionArray1 = [['|'], [], 0];
-    var functionArray2 = [['|'], [], 0];
-    var functionArray3 = [['|'], [], 0];
+    var calculationArray = [['|'], [], 0, undefined];
+    var functionArray1 = [['|'], [], 0, undefined];
+    var functionArray2 = [['|'], [], 0, undefined];
+    var functionArray3 = [['|'], [], 0, undefined];
 
     var inputArrays = [calculationArray, functionArray1, functionArray2, functionArray3];
     // Stores a reference to the array to edit
@@ -86,7 +86,9 @@ $(document).ready(function () {
     function handleSpecialButtonInput(buttonContent){
         switch (buttonContent) {
             case "ENTER": {
-                console.log(eval(currentArray[1].join("")));
+                console.log(eval("EVALUATED: ",currentArray[1].join("")))
+                currentArray.pop();
+                currentArray.push(eval(currentArray[1].join("")));
                 break;
             } case "CLEAR": {
                 clearArray(currentArray);
@@ -151,6 +153,7 @@ $(document).ready(function () {
         array[0].push('|');
         array[1].length = 0;
         array[2] = 0;
+        array[3] = undefined;
     }
 
     function log(){
@@ -160,3 +163,4 @@ $(document).ready(function () {
     }
 });
 
+//TODO make calculator insert shit
