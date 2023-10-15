@@ -40,22 +40,20 @@ $(document).ready(function () {
     $("button").click(function () {
         currentString = jQuery(this).text();
         currentClass = jQuery(this).attr('class');
-        console.log(currentString);
-        console.log(currentClass);
 
         switch (currentClass){
             case 'nav_button':{
                 handleNavButtonInput(jQuery(this).attr('id'));
-                return;
+                break;
             } case 'math_button':{
                 handleMathButtonInput(currentString, currentArray);
-                console.log("Display", currentArray[0]);
-                console.log("Eval", currentArray[1]);
-                return;
-            } case 'special_button'{
+                break;
+            } case 'special_button':{
                 handleSpecialButtonInput(currentString);
+                break;
             }
         }
+        log();
     });
 
     function handleNavButtonInput(buttonID){
@@ -83,8 +81,6 @@ $(document).ready(function () {
         currentArray[0].splice(currentArray[0].indexOf('|'), 1);
         // add cursor at new position
         currentArray[0].splice(currentArray[2], 0, '|');
-        console.log("Display", currentArray[0]);
-        console.log("Eval", currentArray[1]);
     }
 
     function handleSpecialButtonInput(buttonContent){
@@ -130,8 +126,6 @@ $(document).ready(function () {
         displayArray = currentArray[0];
         evalArray = currentArray[1];
 
-        console.log(buttonString);
-
         if (globalLiterals.indexOf(buttonString) != -1) {
             displayArray.push(buttonString);
             evalArray.push(buttonString);
@@ -157,6 +151,12 @@ $(document).ready(function () {
         array[0].push('|');
         array[1].length = 0;
         array[2] = 0;
+    }
+
+    function log(){
+        console.log("current array: ", currentArray);
+        console.log("display array: ", currentArray[0]);
+        console.log("eval array: ", currentArray[1]);
     }
 });
 
