@@ -24,7 +24,11 @@ $(document).ready(function() {
         'sqrt': "Math.sqrt("
     }
 
-    var calculationArray = [[],[]]
+    var calculationArray = [[],[]];
+    var functionArray1 = [[],[]];
+    var functionArray2 = [[],[]];
+    var functionArray3 = [[],[]];
+    // Stores a reference to the array to edit
     var currentArray = calculationArray;
 
     $("button").click(function() {
@@ -40,10 +44,10 @@ $(document).ready(function() {
 
         switch (currentString){
             case "ENTER": {
-                console.log(eval(calculationArray[1].join("")));
+                console.log(eval(currentArray[1].join("")));
                 break;
             } case "CLEAR": {
-                currentArray = [[],[]];
+                clearCurrentArray();
                 break;
             } case "RESET": {
                 console.log("TODO");
@@ -81,6 +85,13 @@ $(document).ready(function() {
         } else {
             displayArray.push(displayDict[buttonString]);
             evalArray.push(evalDict[buttonString]);
+        }
+    }
+
+    function clearCurrentArray(){
+        if (currentArray === calculationArray){
+            calculationArray = [[],[]];
+            currentArray = calculationArray;
         }
     }
 
