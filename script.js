@@ -28,10 +28,10 @@ $(document).ready(function () {
         'sqrt': "Math.sqrt("
     }
 
-    var calculationArray = [[], [], 0];
-    var functionArray1 = [[], [], 0];
-    var functionArray2 = [[], [], 0];
-    var functionArray3 = [[], [], 0];
+    var calculationArray = [['|'], [], 0];
+    var functionArray1 = [['|'], [], 0];
+    var functionArray2 = [['|'], [], 0];
+    var functionArray3 = [['|'], [], 0];
 
     var inputArrays = [calculationArray, functionArray1, functionArray2, functionArray3];
     // Stores a reference to the array to edit
@@ -39,14 +39,19 @@ $(document).ready(function () {
 
     $("button").click(function () {
         currentString = jQuery(this).text();
+        currentClass = jQuery(this).attr('class');
         console.log(currentString);
+        console.log(currentClass);
 
-        // Math buttons are lowercase, navigation buttons aren't
-        if (currentString[0] == currentString[0].toLowerCase()) {
-            handleMathButtonInput(currentString, currentArray);
-            console.log("Display", currentArray[0]);
-            console.log("Eval", currentArray[1]);
-            return;
+        switch (currentClass){
+            case 'nav_button':{
+                return;
+            } case 'math_button':{
+                handleMathButtonInput(currentString, currentArray);
+                console.log("Display", currentArray[0]);
+                console.log("Eval", currentArray[1]);
+                return;
+            }
         }
 
         switch (currentString) {
@@ -77,6 +82,17 @@ $(document).ready(function () {
 
     });
 
+    // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
+    function movePointer(currentArray, direction){
+        currentArray[2] += direction;
+        if (currentArray[2] >= currentArray[1].length) {
+            currentArray[2] = currentArray[1].length - 1;
+        }
+        if (currentArray[2] <= 0){
+            currentArray[2] = 0;
+        }
+    }
+
     function handleMathButtonInput(buttonString, currentArray) {
         displayArray = currentArray[0];
         evalArray = currentArray[1];
@@ -95,6 +111,8 @@ $(document).ready(function () {
         }
     }
 
+    // Clearing arrays
+
     function resetAllArrays() {
         for (element of inputArrays) {
             clearArray(element);
@@ -103,6 +121,7 @@ $(document).ready(function () {
 
     function clearArray(array){
         array[0].length = 0;
+        array[0].push('|');
         array[1].length = 0;
         array[2] = 0;
     }
