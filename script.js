@@ -45,6 +45,7 @@ $(document).ready(function () {
 
         switch (currentClass){
             case 'nav_button':{
+                handleNavButton(jQuery(this).attr('id'));
                 return;
             } case 'math_button':{
                 handleMathButtonInput(currentString, currentArray);
@@ -82,8 +83,20 @@ $(document).ready(function () {
 
     });
 
+    function handleNavButton(buttonID){
+        switch (buttonID){
+            case 'left_button': {
+                movePointer(-1);
+                break;
+            } case 'right_button': {
+                movePointer(1);
+                break;
+            }
+        }
+    }
+
     // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
-    function movePointer(currentArray, direction){
+    function movePointer(direction){
         currentArray[2] += direction;
         if (currentArray[2] >= currentArray[1].length) {
             currentArray[2] = currentArray[1].length - 1;
@@ -91,6 +104,12 @@ $(document).ready(function () {
         if (currentArray[2] <= 0){
             currentArray[2] = 0;
         }
+        // remove cursor
+        currentArray[0].splice(currentArray[0].indexOf('|'), 1);
+        // add cursor at new position
+        currentArray[0].splice(currentArray[2], 0, '|');
+        console.log("Display", currentArray[0]);
+        console.log("Eval", currentArray[1]);
     }
 
     function handleMathButtonInput(buttonString, currentArray) {
