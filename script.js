@@ -89,10 +89,15 @@ $(document).ready(function () {
     }
 
     function navigateTo(page){
+        // set buttons to darkgrey
+        $('.nav_button').each(function() {
+            $(this).css("background-color","darkgrey");
+        });
         if (currentPage == page){
             currentPage = 'HOME';
             currentArray = calculationArray;
         } else {
+            $('button:contains(' + page + ')').css('background-color', 'yellow');
             switch(page){
                 case 'F(X)':{
                     currentPage = 'F(X)'
