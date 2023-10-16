@@ -37,8 +37,8 @@ $(document).ready(function () {
     var functionArray2 = [['|'], [], 0];
     var functionArray3 = [['|'], [], 0];
 
-
-    var inputArrays = [calculationArray, functionArray1, functionArray2, functionArray3];
+    var functionArrays = [functionArray1, functionArray2, functionArray3];
+    var functionArrayIndex = 0;
     // Stores a reference to the array to edit
     var currentArray = calculationArray;
 
@@ -126,7 +126,6 @@ $(document).ready(function () {
         moveCursor(0);
     }
 
-    // put input where cursor is
     function handleMathButtonInput(buttonString, currentArray) {
         index = currentArray[2];
         displayArray = currentArray[0];
@@ -150,9 +149,9 @@ $(document).ready(function () {
     }
 
     // Clearing arrays
-
     function resetAllArrays() {
-        for (element of inputArrays) {
+        clearArray(calculationArray);
+        for (element of functionArrays) {
             clearArray(element);
         }
         lastAnswerValue = 0;
@@ -164,6 +163,8 @@ $(document).ready(function () {
         array[1].length = 0;
         array[2] = 0;
     }
+
+    // console logging
 
     function log(){
         console.log("\n");
