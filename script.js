@@ -93,7 +93,6 @@ $(document).ready(function () {
         switch (buttonContent) {
             case "ENTER": {
                 lastAnswerValue = eval(currentArray[1].join(""));
-                console.log("lastAnswerValue:", lastAnswerValue);
                 break;
             } case "CLEAR": {
                 clearArray(currentArray);
@@ -156,6 +155,7 @@ $(document).ready(function () {
         for (element of inputArrays) {
             clearArray(element);
         }
+        lastAnswerValue = 0;
     }
 
     function clearArray(array){
@@ -167,8 +167,10 @@ $(document).ready(function () {
 
     function log(){
         console.log("\n");
-        console.log("current array: ", currentArray);
-        console.log("display array: ", currentArray[0]);
-        console.log("eval array: ", currentArray[1]);
+        console.log("display array  : ", currentArray[0]);
+        console.log("display string : ", currentArray[0].join(''));
+        console.log("eval array     : ", currentArray[1]);
+        console.log("eval string    : ", currentArray[1].join(''));
+        console.log("lastAnswerValue:", lastAnswerValue);
     }
 });
