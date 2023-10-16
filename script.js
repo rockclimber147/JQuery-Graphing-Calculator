@@ -3,6 +3,7 @@ $(document).ready(function () {
     let canvas = $("#screen").get(0);
     let ctx = canvas.getContext("2d");
 
+    // For converting input strings
     let globalLiterals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')', '.', '+', '-'];
     let displayLiterals = ['x', '÷', 'ANS'];
     let displayDict = {
@@ -29,17 +30,29 @@ $(document).ready(function () {
         'ANS': 'lastAnswerValue'
     }
 
-
+    
     var lastAnswerValue = 0;
-
     var calculationArray = [['|'], [], 0];
+    var currentPage = 'HOME';
+
+    // F(X) page
     var functionArray1 = [['|'], [], 0];
     var functionArray2 = [['|'], [], 0];
     var functionArray3 = [['|'], [], 0];
 
     var functionArrays = [functionArray1, functionArray2, functionArray3];
     var functionArrayIndex = 0;
-    // Stores a reference to the array to edit
+    
+    // AXES page
+    var minX = [['|'], [], 0];
+    var maxX= [['|'], [], 0];
+    var minY = [['|'], [], 0];
+    var maxY= [['|'], [], 0];
+    
+    var axisArrays = [minX, maxX, minY, maxY];
+    var axisArrayIndex = 0;
+
+    // currentArray points to calculationArray by default
     var currentArray = calculationArray;
 
     $("button").click(function () {
@@ -47,8 +60,8 @@ $(document).ready(function () {
         currentClass = jQuery(this).attr('class');
 
         switch (currentClass){
-            case 'nav_button':{
-                handleNavButtonInput(jQuery(this).attr('id'));
+            case 'direction_button':{
+                handleDirectionButtonInput(jQuery(this).attr('id'));
                 break;
             } case 'math_button':{
                 handleMathButtonInput(currentString, currentArray);
@@ -56,12 +69,14 @@ $(document).ready(function () {
             } case 'special_button':{
                 handleSpecialButtonInput(currentString);
                 break;
+            } case 'nav_button':{
+                navigateTo(currentString);
             }
         }
         log();
     });
 
-    function handleNavButtonInput(buttonID){
+    function handleDirectionButtonInput(buttonID){
         switch (buttonID){
             case 'left_button': {
                 moveCursor(-1);
@@ -73,6 +88,28 @@ $(document).ready(function () {
         }
     }
 
+    function navigateTo(page){
+        if (currentPage == page){
+            currentPage = 'HOME';
+            currentArray = calculationArray;
+        } else {
+            switch(page){
+                case 'F(X)':{
+                    currentPage = 'F(X)'
+                    break;
+                } case 'AXES':{
+                    currentPage = 'AXES';
+                    break;
+                } case 'GRAPH':{
+                    currentPage = 'GRAPH';
+                    break;
+                } case 'SCROLL':{
+                    currentPage = 'SCROLL';
+                    break;
+                }
+            }
+        }
+    }
     
     function moveCursor(direction){
         // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
@@ -102,18 +139,6 @@ $(document).ready(function () {
                 break;
             } case "DEL": {
                 deleteAtCursor();
-                break;
-            } case "SCROLL": {
-                console.log("TODO");
-                break;
-            } case "GRAPH": {
-                console.log("TODO");
-                break;
-            } case "F(X)": {
-                console.log("TODO");
-                break;
-            } case "AXES": {
-                console.log("TODO");
                 break;
             }
         }
@@ -168,6 +193,7 @@ $(document).ready(function () {
 
     function log(){
         console.log("\n");
+        console.log(currentPage);
         console.log("display array  : ", currentArray[0]);
         console.log("display string : ", currentArray[0].join(''));
         console.log("eval array     : ", currentArray[1]);
