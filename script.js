@@ -4,7 +4,7 @@ $(document).ready(function () {
     let ctx = canvas.getContext("2d");
 
     let globalLiterals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')', '.', '+', '-'];
-    let displayLiterals = ['x', '÷'];
+    let displayLiterals = ['x', '÷', 'ANS'];
     let displayDict = {
         'e^x': 'e^',
         'ln': "log(",
@@ -25,7 +25,8 @@ $(document).ready(function () {
         'x^y': "**",
         'x': "*",
         '÷': "/",
-        'sqrt': "Math.sqrt("
+        'sqrt': "Math.sqrt(",
+        'ANS': 'lastAnswerValue'
     }
 
 
@@ -72,8 +73,9 @@ $(document).ready(function () {
         }
     }
 
-    // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
+    
     function moveCursor(direction){
+        // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
         currentArray[2] += direction;
         if (currentArray[2] > currentArray[1].length) {
             currentArray[2] = currentArray[1].length;
@@ -88,11 +90,10 @@ $(document).ready(function () {
     }
 
     function handleSpecialButtonInput(buttonContent){
-        console.log("Special button pressed");
         switch (buttonContent) {
             case "ENTER": {
                 lastAnswerValue = eval(currentArray[1].join(""));
-                console.log("EVALUATED:");
+                console.log("lastAnswerValue:", lastAnswerValue);
                 break;
             } case "CLEAR": {
                 clearArray(currentArray);
