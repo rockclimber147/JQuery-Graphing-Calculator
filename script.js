@@ -28,10 +28,14 @@ $(document).ready(function () {
         'sqrt': "Math.sqrt("
     }
 
-    var calculationArray = [['|'], [], 0, undefined];
-    var functionArray1 = [['|'], [], 0, undefined];
-    var functionArray2 = [['|'], [], 0, undefined];
-    var functionArray3 = [['|'], [], 0, undefined];
+
+    var lastAnswerValue = 0;
+
+    var calculationArray = [['|'], [], 0];
+    var functionArray1 = [['|'], [], 0];
+    var functionArray2 = [['|'], [], 0];
+    var functionArray3 = [['|'], [], 0];
+
 
     var inputArrays = [calculationArray, functionArray1, functionArray2, functionArray3];
     // Stores a reference to the array to edit
@@ -87,9 +91,8 @@ $(document).ready(function () {
         console.log("Special button pressed");
         switch (buttonContent) {
             case "ENTER": {
-                console.log("EVALUATED:", eval(currentArray[1].join("")));
-                currentArray.pop();
-                currentArray.push(eval(currentArray[1].join("")));
+                lastAnswerValue = eval(currentArray[1].join(""));
+                console.log("EVALUATED:");
                 break;
             } case "CLEAR": {
                 clearArray(currentArray);
@@ -159,10 +162,10 @@ $(document).ready(function () {
         array[0].push('|');
         array[1].length = 0;
         array[2] = 0;
-        array[3] = undefined;
     }
 
     function log(){
+        console.log("\n");
         console.log("current array: ", currentArray);
         console.log("display array: ", currentArray[0]);
         console.log("eval array: ", currentArray[1]);
