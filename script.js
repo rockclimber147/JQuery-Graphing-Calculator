@@ -71,8 +71,8 @@ $(document).ready(function () {
     // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
     function moveCursor(direction){
         currentArray[2] += direction;
-        if (currentArray[2] >= currentArray[1].length) {
-            currentArray[2] = currentArray[1].length - 1;
+        if (currentArray[2] > currentArray[1].length) {
+            currentArray[2] = currentArray[1].length;
         }
         if (currentArray[2] <= 0){
             currentArray[2] = 0;
@@ -84,9 +84,10 @@ $(document).ready(function () {
     }
 
     function handleSpecialButtonInput(buttonContent){
+        console.log("Special button pressed");
         switch (buttonContent) {
             case "ENTER": {
-                console.log(eval("EVALUATED: ",currentArray[1].join("")))
+                console.log("EVALUATED:", eval(currentArray[1].join("")));
                 currentArray.pop();
                 currentArray.push(eval(currentArray[1].join("")));
                 break;
@@ -122,22 +123,27 @@ $(document).ready(function () {
         moveCursor(0);
     }
 
-    
-
+    // put input where cursor is
     function handleMathButtonInput(buttonString, currentArray) {
+        index = currentArray[2];
         displayArray = currentArray[0];
         evalArray = currentArray[1];
+        let displayString = "";
+        let evalString = "";
 
         if (globalLiterals.indexOf(buttonString) != -1) {
-            displayArray.push(buttonString);
-            evalArray.push(buttonString);
+            displayString = buttonString;
+            evalString = buttonString;
         } else if (displayLiterals.indexOf(buttonString) != -1) {
-            displayArray.push(buttonString);
-            evalArray.push(evalDict[buttonString]);
+            displayString = buttonString;
+            evalString = evalDict[buttonString];
         } else {
-            displayArray.push(displayDict[buttonString]);
-            evalArray.push(evalDict[buttonString]);
+            displayString = displayDict[buttonString];
+            evalString = evalDict[buttonString];
         }
+        displayArray.splice(index + 1, 0, displayString)
+        evalArray.splice(index, 0, evalString)
+        moveCursor(1);
     }
 
     // Clearing arrays
@@ -162,5 +168,3 @@ $(document).ready(function () {
         console.log("eval array: ", currentArray[1]);
     }
 });
-
-//TODO make calculator insert shit
