@@ -17,7 +17,7 @@ $(document).ready(function () {
         'sqrt': "sqrt("
     }
     let evalDict = {
-        'e^x':  'Math.E**',
+        'e^x': 'Math.E**',
         'ln': "Math.log(",
         'log10': 'Math.log10(',
         'sin': "Math.sin(",
@@ -30,25 +30,25 @@ $(document).ready(function () {
         'ANS': 'lastAnswerValue'
     }
 
-    
+
     var lastAnswerValue = 0;
-    var calculationArray = [['|'], [], 0];
+    var calculationArray = [['>'], [], 0];
     var currentPage = 'HOME';
 
     // F(X) page
-    var functionArray1 = [['|'], [], 0];
-    var functionArray2 = [['|'], [], 0];
-    var functionArray3 = [['|'], [], 0];
+    var functionArray1 = [['>'], [], 0];
+    var functionArray2 = [['>'], [], 0];
+    var functionArray3 = [['>'], [], 0];
 
     var functionArrays = [functionArray1, functionArray2, functionArray3];
     var functionArrayIndex = 0;
-    
+
     // AXES page
-    var minX = [['|'], [], 0];
-    var maxX= [['|'], [], 0];
-    var minY = [['|'], [], 0];
-    var maxY= [['|'], [], 0];
-    
+    var minX = [['>'], [], 0];
+    var maxX = [['>'], [], 0];
+    var minY = [['>'], [], 0];
+    var maxY = [['>'], [], 0];
+
     var axisArrays = [minX, maxX, minY, maxY];
     var axisArrayIndex = 0;
 
@@ -59,79 +59,79 @@ $(document).ready(function () {
         currentString = jQuery(this).text();
         currentClass = jQuery(this).attr('class');
 
-        switch (currentClass){
-            case 'direction_button':{
+        switch (currentClass) {
+            case 'direction_button': {
                 handleDirectionButtonInput(jQuery(this).attr('id'));
                 break;
-            } case 'math_button':{
+            } case 'math_button': {
                 handleMathButtonInput(currentString, currentArray);
                 break;
-            } case 'special_button':{
+            } case 'special_button': {
                 handleSpecialButtonInput(currentString);
                 break;
-            } case 'nav_button':{
+            } case 'nav_button': {
                 navigateTo(currentString);
             }
         }
         log();
     });
 
-    function handleDirectionButtonInput(buttonID){
-        switch (buttonID){
+    function handleDirectionButtonInput(buttonID) {
+        switch (buttonID) {
             case 'left_button': {
-                moveCursor(-1);
+                moveHorizontalCursor(-1);
                 break;
             } case 'right_button': {
-                moveCursor(1);
+                moveHorizontalCursor(1);
                 break;
             }
         }
     }
 
-    function navigateTo(page){
+    function navigateTo(page) {
         // set buttons to darkgrey
-        $('.nav_button').each(function() {
-            $(this).css("background-color","darkgrey");
+        $('.nav_button').each(function () {
+            $(this).css("background-color", "darkgrey");
         });
-        if (currentPage == page){
+        if (currentPage == page) {
             currentPage = 'HOME';
             currentArray = calculationArray;
         } else {
             $('button:contains(' + page + ')').css('background-color', 'yellow');
-            switch(page){
-                case 'F(X)':{
+            switch (page) {
+                case 'F(X)': {
                     currentPage = 'F(X)'
                     break;
-                } case 'AXES':{
+                } case 'AXES': {
                     currentPage = 'AXES';
                     break;
-                } case 'GRAPH':{
+                } case 'GRAPH': {
                     currentPage = 'GRAPH';
                     break;
-                } case 'SCROLL':{
+                } case 'SCROLL': {
                     currentPage = 'SCROLL';
                     break;
                 }
             }
         }
     }
-    
-    function moveCursor(direction){
+
+    function moveHorizontalCursor(direction) {
         // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
         currentArray[2] += direction;
         if (currentArray[2] > currentArray[1].length) {
             currentArray[2] = currentArray[1].length;
         }
-        if (currentArray[2] <= 0){
+        if (currentArray[2] <= 0) {
             currentArray[2] = 0;
         }
         // remove cursor
-        currentArray[0].splice(currentArray[0].indexOf('|'), 1);
+        currentArray[0].splice(currentArray[0].indexOf('>'), 1);
         // add cursor at new position
-        currentArray[0].splice(currentArray[2], 0, '|');
+        currentArray[0].splice(currentArray[2], 0, '>');
     }
 
-    function handleSpecialButtonInput(buttonContent){
+    function handleSpecialButtonInput(buttonContent) {
         switch (buttonContent) {
             case "ENTER": {
                 lastAnswerValue = eval(currentArray[1].join(""));
@@ -145,14 +145,28 @@ $(document).ready(function () {
             } case "DEL": {
                 deleteAtCursor();
                 break;
+            } case 'X': {
+                handleXvarInput();
             }
         }
     }
 
-    function deleteAtCursor(){
+    function handleXvarInput(){
+        if (currentPage != 'F(X)'){
+            return;
+        }
+        index = currentArray[2];
+        displayArray = currentArray[0];
+        evalArray = currentArray[1];
+        displayArray.splice(index + 1, 0, 'x')
+        evalArray.splice(index, 0, 'x')
+        moveCursor(1);
+    }
+
+    function deleteAtCursor() {
         index = currentArray[2];
         currentArray[0].splice(index + 1, 1);
-        currentArray[1].splice(index , 1);
+        currentArray[1].splice(index, 1);
         moveCursor(0);
     }
 
@@ -187,16 +201,16 @@ $(document).ready(function () {
         lastAnswerValue = 0;
     }
 
-    function clearArray(array){
+    function clearArray(array) {
         array[0].length = 0;
-        array[0].push('|');
+        array[0].push('>');
         array[1].length = 0;
         array[2] = 0;
     }
 
     // console logging
 
-    function log(){
+    function log() {
         console.log("\n");
         console.log(currentPage);
         console.log("display array  : ", currentArray[0]);
