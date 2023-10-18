@@ -34,23 +34,27 @@ $(document).ready(function () {
 
     var lastAnswerValue = 0;
     var calculationArray = [['>'], [], 0];
+    // store trash inputs
+    var garbageArray = [['>'], [], 0];
     
 
     // F(X) page
     var functionArray1 = [['>'], [], 0];
     var functionArray2 = [['>'], [], 0];
     var functionArray3 = [['>'], [], 0];
-
     var functionArrays = [functionArray1, functionArray2, functionArray3];
     var functionArrayIndex = 0;
 
+    var x = 0;
+
     // AXES page
-    var minX = [['>'], [], -10];
-    var maxX = [['>'], [], 10];
-    var minY = [['>'], [], -10];
-    var maxY = [['>'], [], 10];
+    var minX = [['>'], [], 0];
+    var maxX = [['>'], [], 0];
+    var minY = [['>'], [], 0];
+    var maxY = [['>'], [], 0];
 
     var axisArrays = [minX, maxX, minY, maxY];
+    var axisValues = [-10, 10, -10, 10];
     var axisArrayIndex = 0;
 
     // currentArray points to calculationArray by default
@@ -133,10 +137,12 @@ $(document).ready(function () {
         $('.nav_button').each(function () {
             $(this).css("background-color", "darkgrey");
         });
+        // on double tap, go HOME
         if (currentPage == page) {
             currentPage = 'HOME';
             currentArray = calculationArray;
         } else {
+            // Change button background to yellow
             $('button:contains(' + page + ')').css('background-color', 'yellow');
             switch (page) {
                 case 'F(X)': {
@@ -145,7 +151,7 @@ $(document).ready(function () {
                     break;
                 } case 'AXES': {
                     currentPage = 'AXES';
-                    currrentArray = axisArrays[axisArrayIndex];
+                    currentArray = axisArrays[axisArrayIndex];
                     break;
                 } case 'GRAPH': {
                     currentPage = 'GRAPH';
@@ -214,10 +220,9 @@ $(document).ready(function () {
             displayString = displayDict[buttonString];
             evalString = evalDict[buttonString];
         }
-        displayArray.splice(index + 1, 0, displayString)
-        evalArray.splice(index, 0, evalString)
+        displayArray.splice(index + 1, 0, displayString);
+        evalArray.splice(index, 0, evalString);
         moveHorizontalCursor(1);
-        log();
     }
 
     // Clearing arrays
@@ -259,6 +264,6 @@ $(document).ready(function () {
         console.log('\n');
         console.log('axis arrays: ', axisArrays);
         console.log('axis array index: ', axisArrayIndex);
-        console.log('axes [x0, x1, y0, y1]: ', axisArrays[0][2], axisArrays[1][2], axisArrays[2][2], axisArrays[3][2]);
+        console.log('axes [x0, x1, y0, y1]: ', axisValues);
     }
 });
