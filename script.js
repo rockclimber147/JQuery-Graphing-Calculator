@@ -29,11 +29,12 @@ $(document).ready(function () {
         'sqrt': "Math.sqrt(",
         'ANS': 'lastAnswerValue'
     }
-
+    
+    var currentPage = 'HOME';
 
     var lastAnswerValue = 0;
     var calculationArray = [['>'], [], 0];
-    var currentPage = 'HOME';
+    
 
     // F(X) page
     var functionArray1 = [['>'], [], 0];
@@ -44,10 +45,10 @@ $(document).ready(function () {
     var functionArrayIndex = 0;
 
     // AXES page
-    var minX = [['>'], [], 0];
-    var maxX = [['>'], [], 0];
-    var minY = [['>'], [], 0];
-    var maxY = [['>'], [], 0];
+    var minX = [['>'], [], -10];
+    var maxX = [['>'], [], 10];
+    var minY = [['>'], [], -10];
+    var maxY = [['>'], [], 10];
 
     var axisArrays = [minX, maxX, minY, maxY];
     var axisArrayIndex = 0;
@@ -84,34 +85,12 @@ $(document).ready(function () {
             } case 'right_button': {
                 moveHorizontalCursor(1);
                 break;
-            }
-        }
-    }
-
-    function navigateTo(page) {
-        // set buttons to darkgrey
-        $('.nav_button').each(function () {
-            $(this).css("background-color", "darkgrey");
-        });
-        if (currentPage == page) {
-            currentPage = 'HOME';
-            currentArray = calculationArray;
-        } else {
-            $('button:contains(' + page + ')').css('background-color', 'yellow');
-            switch (page) {
-                case 'F(X)': {
-                    currentPage = 'F(X)'
-                    break;
-                } case 'AXES': {
-                    currentPage = 'AXES';
-                    break;
-                } case 'GRAPH': {
-                    currentPage = 'GRAPH';
-                    break;
-                } case 'SCROLL': {
-                    currentPage = 'SCROLL';
-                    break;
-                }
+            } case 'up_button': {
+                moveVerticalCursor(1);
+                break;
+            } case 'down_button': {
+                moveVerticalCursor(-1);
+                break;
             }
         }
     }
@@ -129,6 +108,54 @@ $(document).ready(function () {
         currentArray[0].splice(currentArray[0].indexOf('>'), 1);
         // add cursor at new position
         currentArray[0].splice(currentArray[2], 0, '>');
+    }
+
+    function moveVerticalCursor(direction){
+        switch (currentPage) {
+            case 'F(X)' : {
+                console.log("fx");
+                functionArrayIndex = (functionArrayIndex + direction + functionArrays.length) % functionArrays.length;
+                currentArray = functionArrays[functionArrayIndex];
+                break;
+            } case 'AXES' : {
+                console.log("axes");
+                axisArrayIndex = (axisArrayIndex + direction + axisArrays.length) % axisArrays.length;
+                currentArray = axisArrays[axisArrayIndex];
+                break;
+            } case 'SCROLL' : {
+                // TODO
+            }
+        }
+    }
+
+    function navigateTo(page) {
+        // set buttons to darkgrey
+        $('.nav_button').each(function () {
+            $(this).css("background-color", "darkgrey");
+        });
+        if (currentPage == page) {
+            currentPage = 'HOME';
+            currentArray = calculationArray;
+        } else {
+            $('button:contains(' + page + ')').css('background-color', 'yellow');
+            switch (page) {
+                case 'F(X)': {
+                    currentPage = 'F(X)';
+                    currentArray = functionArrays[functionArrayIndex];
+                    break;
+                } case 'AXES': {
+                    currentPage = 'AXES';
+                    currrentArray = axisArrays[axisArrayIndex];
+                    break;
+                } case 'GRAPH': {
+                    currentPage = 'GRAPH';
+                    break;
+                } case 'SCROLL': {
+                    currentPage = 'SCROLL';
+                    break;
+                }
+            }
+        }
     }
 
     function handleSpecialButtonInput(buttonContent) {
@@ -151,8 +178,8 @@ $(document).ready(function () {
         }
     }
 
-    function handleXvarInput(){
-        if (currentPage != 'F(X)'){
+    function handleXvarInput() {
+        if (currentPage != 'F(X)') {
             return;
         }
         index = currentArray[2];
@@ -160,14 +187,14 @@ $(document).ready(function () {
         evalArray = currentArray[1];
         displayArray.splice(index + 1, 0, 'x')
         evalArray.splice(index, 0, 'x')
-        moveCursor(1);
+        moveHorizontalCursor(1);
     }
 
     function deleteAtCursor() {
         index = currentArray[2];
         currentArray[0].splice(index + 1, 1);
         currentArray[1].splice(index, 1);
-        moveCursor(0);
+        moveHorizontalCursor(0);
     }
 
     function handleMathButtonInput(buttonString, currentArray) {
@@ -189,7 +216,8 @@ $(document).ready(function () {
         }
         displayArray.splice(index + 1, 0, displayString)
         evalArray.splice(index, 0, evalString)
-        moveCursor(1);
+        moveHorizontalCursor(1);
+        log();
     }
 
     // Clearing arrays
@@ -198,7 +226,14 @@ $(document).ready(function () {
         for (element of functionArrays) {
             clearArray(element);
         }
+        for (element of axisArrays) {
+            clearArray(element);
+        }
         lastAnswerValue = 0;
+        axisArrays[0][2] = -10;
+        axisArrays[1][2] = 10;
+        axisArrays[2][2] = -10;
+        axisArrays[3][2] = 10;
     }
 
     function clearArray(array) {
@@ -218,5 +253,12 @@ $(document).ready(function () {
         console.log("eval array     : ", currentArray[1]);
         console.log("eval string    : ", currentArray[1].join(''));
         console.log("lastAnswerValue:", lastAnswerValue);
+        console.log('\n');
+        console.log('function arrays: ', functionArrays);
+        console.log('function array index: ', functionArrayIndex);
+        console.log('\n');
+        console.log('axis arrays: ', axisArrays);
+        console.log('axis array index: ', axisArrayIndex);
+        console.log('axes [x0, x1, y0, y1]: ', axisArrays[0][2], axisArrays[1][2], axisArrays[2][2], axisArrays[3][2]);
     }
 });
