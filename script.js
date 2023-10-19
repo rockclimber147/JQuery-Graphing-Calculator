@@ -167,7 +167,7 @@ $(document).ready(function () {
     function handleSpecialButtonInput(buttonContent) {
         switch (buttonContent) {
             case "ENTER": {
-                lastAnswerValue = eval(currentArray[1].join(""));
+                hitEnter();
                 break;
             } case "CLEAR": {
                 clearArray(currentArray);
@@ -203,6 +203,18 @@ $(document).ready(function () {
         moveHorizontalCursor(0);
     }
 
+    function hitEnter(){
+        switch (currentPage) {
+            case "HOME" : {
+                lastAnswerValue = safeEval(currentArray[1].join(""));
+                break;
+            } case 'AXES' : {
+                axisValues[axisArrayIndex] = safeEval(currentArray[1].join(""));
+                break;
+            }
+        }
+    }
+
     function handleMathButtonInput(buttonString, currentArray) {
         index = currentArray[2];
         displayArray = currentArray[0];
@@ -221,7 +233,7 @@ $(document).ready(function () {
             displayString = displayDict[buttonString];
             evalString = evalDict[buttonString];
         }
-        
+
         // Place translated token at cursor
         displayArray.splice(index + 1, 0, displayString);
         evalArray.splice(index, 0, evalString);
@@ -247,6 +259,15 @@ $(document).ready(function () {
         array[0].push('>');
         array[1].length = 0;
         array[2] = 0;
+    }
+
+    function safeEval(toEval){
+        try {
+            result = eval(toEval);
+            return result;
+        } catch (error) {
+            return undefined;
+        }
     }
 
     // console logging
