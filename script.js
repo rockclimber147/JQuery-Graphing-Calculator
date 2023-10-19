@@ -210,6 +210,7 @@ $(document).ready(function () {
         let displayString = "";
         let evalString = "";
 
+        // Translate input to appropriate strings
         if (globalLiterals.indexOf(buttonString) != -1) {
             displayString = buttonString;
             evalString = buttonString;
@@ -220,6 +221,8 @@ $(document).ready(function () {
             displayString = displayDict[buttonString];
             evalString = evalDict[buttonString];
         }
+        
+        // Place translated token at cursor
         displayArray.splice(index + 1, 0, displayString);
         evalArray.splice(index, 0, evalString);
         moveHorizontalCursor(1);
@@ -235,10 +238,8 @@ $(document).ready(function () {
             clearArray(element);
         }
         lastAnswerValue = 0;
-        axisArrays[0][2] = -10;
-        axisArrays[1][2] = 10;
-        axisArrays[2][2] = -10;
-        axisArrays[3][2] = 10;
+        // reset axes
+        axisValues = [-10, 10, -10, 10];
     }
 
     function clearArray(array) {
