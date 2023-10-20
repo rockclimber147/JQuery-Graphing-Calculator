@@ -253,13 +253,8 @@ $(document).ready(function () {
     function evaluateGraphs(){
         // for each function array
         for (i = 0; i < functionArrays.length; i += 1) {
-            // evalString = functionArrays[i][1].join('');
+            evalString = functionArrays[i][1].join('');
             // evalString = 'Math.sin(x)';
-            if (i == 0){
-                evalString = 'x ** 2 - 5';
-            } else {
-                evalString = 'Math.sin(x)';
-            }
             xStep = (axisValues[1] - axisValues[0]) / canvas.width;
             console.log(xStep);
             graphIndex = 0;
@@ -272,12 +267,11 @@ $(document).ready(function () {
             console.log(graphs[i]);
         }
     }
-    evaluateGraphs();
-    displayGraphs();
 
     // Display
 
     function updateDisplay() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         switch (currentPage){
             case 'HOME' : {
                 displayHome();
@@ -301,9 +295,9 @@ $(document).ready(function () {
 
     function displayGraphs(){
         for (graph of graphs){
-            // if (graph.find(undefined) != undefined){
-            displayGraph(graph);
-            // }
+            if (!graph.includes(undefined)){
+                displayGraph(graph);
+            }
         }
     }
 
