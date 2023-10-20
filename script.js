@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
     let canvas = $("#screen").get(0);
-    let ctx = canvas.getContext("2d");
+    var ctx = canvas.getContext("2d");
 
     // For converting input strings
     let globalLiterals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')', '.', '+', '-'];
@@ -57,9 +57,18 @@ $(document).ready(function () {
     var axisValues = [-10, 10, -10, 10];
     var axisArrayIndex = 0;
 
+    // GRAPH page
+    var f1Values = Array(canvas.width).fill(0);
+    var f2Values = Array(canvas.width).fill(0);
+    var f3Values = Array(canvas.width).fill(0);
+    var graphs = [f1Values, f2Values, f3Values];
+    var graphArrayIndex = 0;
+    var graphXPointer = 0;
+
     // currentArray points to calculationArray by default
     var currentArray = calculationArray;
 
+    // button press handling
     $("button").click(function () {
         currentString = jQuery(this).text();
         currentClass = jQuery(this).attr('class');
@@ -78,6 +87,7 @@ $(document).ready(function () {
                 navigateTo(currentString);
             }
         }
+        updateDisplay();
         log();
     });
 
@@ -117,12 +127,10 @@ $(document).ready(function () {
     function moveVerticalCursor(direction){
         switch (currentPage) {
             case 'F(X)' : {
-                console.log("fx");
                 functionArrayIndex = (functionArrayIndex + direction + functionArrays.length) % functionArrays.length;
                 currentArray = functionArrays[functionArrayIndex];
                 break;
             } case 'AXES' : {
-                console.log("axes");
                 axisArrayIndex = (axisArrayIndex + direction + axisArrays.length) % axisArrays.length;
                 currentArray = axisArrays[axisArrayIndex];
                 break;
@@ -155,6 +163,7 @@ $(document).ready(function () {
                     break;
                 } case 'GRAPH': {
                     currentPage = 'GRAPH';
+                    evaluateGraphs();
                     break;
                 } case 'SCROLL': {
                     currentPage = 'SCROLL';
@@ -239,6 +248,85 @@ $(document).ready(function () {
         evalArray.splice(index, 0, evalString);
         moveHorizontalCursor(1);
     }
+    // Graphing
+
+    function evaluateGraphs(){
+        // for each function array
+        for (i = 0; i < functionArrays.length; i += 1) {
+            // evalString = functionArrays[i][1].join('');
+            // evalString = 'Math.sin(x)';
+            if (i == 0){
+                evalString = 'x ** 2 - 5';
+            } else {
+                evalString = 'Math.sin(x)';
+            }
+            xStep = (axisValues[1] - axisValues[0]) / canvas.width;
+            console.log(xStep);
+            graphIndex = 0;
+            // evaluate the correspondng graph
+            for (x = axisValues[0]; x < axisValues[1]; x += xStep){
+                graphs[i][graphIndex] = safeEval(evalString);
+                graphIndex += 1;
+                console.log(x);
+            }
+            console.log(graphs[i]);
+        }
+    }
+    evaluateGraphs();
+    displayGraphs();
+
+    // Display
+
+    function updateDisplay() {
+        switch (currentPage){
+            case 'HOME' : {
+                displayHome();
+                break;
+            } case 'F(X)' : {
+                break;
+            } case 'AXES' : {
+                break;
+            } case 'GRAPH' : {
+                displayGraphs();
+                break;
+            } case 'SCROLL' : {
+                break;
+            }
+        }
+    }
+
+    function displayHome(){
+        // TODO
+    }
+
+    function displayGraphs(){
+        for (graph of graphs){
+            // if (graph.find(undefined) != undefined){
+            displayGraph(graph);
+            // }
+        }
+    }
+
+    function displayGraph(graphArray){
+        ctx.beginPath();
+        ctx.moveTo(0, getYCoord(graphArray[0]));
+        pixel = 0;
+        for (value of graphArray){
+            ctx.lineTo(pixel, getYCoord(value));
+            pixel += 1;
+        }
+        ctx.stroke();
+    }
+
+    function getYCoord(actualY){
+        yMin = axisValues[2];
+        yMax = axisValues[3];
+        // Y increases in the negative direction so invert the ign of the span
+        ySpan = yMin - yMax;
+        scaledY = actualY / ySpan * canvas.height;
+        offsetY = yMin / ySpan * canvas.height;
+        return scaledY + offsetY;
+    }
 
     // Clearing arrays
     function resetAllArrays() {
@@ -274,6 +362,8 @@ $(document).ready(function () {
 
     function log() {
         console.log("\n");
+        console.log("canvas width: ", canvas.width);
+        console.log("canvas height: ", canvas.height);
         console.log(currentPage);
         console.log("display array  : ", currentArray[0]);
         console.log("display string : ", currentArray[0].join(''));
@@ -288,4 +378,5 @@ $(document).ready(function () {
         console.log('axis array index: ', axisArrayIndex);
         console.log('axes [x0, x1, y0, y1]: ', axisValues);
     }
+    
 });
