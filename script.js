@@ -1,7 +1,15 @@
 $(document).ready(function () {
 
-    let canvas = $("#screen").get(0);
+    let canvas = $("#screen_canvas").get(0);
     var ctx = canvas.getContext("2d");
+
+    let calculatorDisplayWidth = $('#calculator').width();
+    canvas.width = calculatorDisplayWidth;
+    canvas.height = calculatorDisplayWidth * 0.75;
+    
+    let screenText = $('#screen_text');
+    screenText.width(calculatorDisplayWidth);
+    screenText.height(calculatorDisplayWidth * .75);
 
     // For converting input strings
     let globalLiterals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')', '.', '+', '-'];
@@ -294,9 +302,21 @@ $(document).ready(function () {
     }
 
     function displayGraphs(){
-        for (graph of graphs){
-            if (!graph.includes(undefined)){
-                displayGraph(graph);
+        for (i = 0; i < graphs.length; i++){
+            switch(i){
+                case 0 : {
+                    ctx.strokeStyle = 'red';
+                    break;
+                } case 1 : {
+                    ctx.strokeStyle = 'green';
+                    break;
+                }case 2 : {
+                    ctx.strokeStyle = 'blue';
+                    break;
+                }
+            }
+            if (!graphs[i].includes(undefined)){
+                displayGraph(graphs[i]);
             }
         }
     }
@@ -372,5 +392,7 @@ $(document).ready(function () {
         console.log('axis array index: ', axisArrayIndex);
         console.log('axes [x0, x1, y0, y1]: ', axisValues);
     }
+
+    canvas.width = 400;
     
 });
