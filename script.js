@@ -226,6 +226,16 @@ $(document).ready(function () {
     }
 
     function deleteAtCursor() {
+
+
+
+
+
+        // TODO Figure out why zooming out breaks graph sometimes ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
         if (currentPage == 'SCROLL'){
             zoomScroll(-1);
         }
