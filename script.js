@@ -3,6 +3,8 @@ $(document).ready(function () {
     let canvas = $("#screen_canvas").get(0);
     var ctx = canvas.getContext("2d");
 
+    var screenTextDisplay = $('#screen_text').get(0);
+
     let calculatorDisplayWidth = $('#calculator').width();
     canvas.width = calculatorDisplayWidth;
     canvas.height = calculatorDisplayWidth * 0.75;
@@ -145,6 +147,7 @@ $(document).ready(function () {
             case 'F(X)': {
                 functionArrayIndex = (functionArrayIndex + direction + functionArrays.length) % functionArrays.length;
                 currentArray = functionArrays[functionArrayIndex];
+                displayFunctions();
                 break;
             } case 'AXES': {
                 axisArrayIndex = (axisArrayIndex + direction + axisArrays.length) % axisArrays.length;
@@ -324,6 +327,7 @@ $(document).ready(function () {
                 displayHome();
                 break;
             } case 'F(X)': {
+                displayFunctions();
                 break;
             } case 'AXES': {
                 break;
@@ -373,7 +377,29 @@ $(document).ready(function () {
     }
 
     function displayHome() {
-        // TODO
+        
+        jQuery(screenTextDisplay).removeClass();
+        jQuery(screenTextDisplay).addClass('black');
+        jQuery(screenTextDisplay).text(currentArray[0].join(''));
+    }
+
+    function displayFunctions(){
+        jQuery(screenTextDisplay).removeClass();
+        switch (functionArrayIndex) {
+            case 0: {
+                jQuery(screenTextDisplay).addClass('red');
+                jQuery(screenTextDisplay).text('F1: ' + currentArray[0].join(''))
+                break;
+            } case 1: {
+                jQuery(screenTextDisplay).addClass('green');
+                jQuery(screenTextDisplay).text('F2: ' + currentArray[0].join(''))
+                break;
+            } case 2: {
+                jQuery(screenTextDisplay).addClass('blue');
+                jQuery(screenTextDisplay).text('F3: ' + currentArray[0].join(''))
+                break;
+            } 
+        }
     }
 
     function displayGraphs() {

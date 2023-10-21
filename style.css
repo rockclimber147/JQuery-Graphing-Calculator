@@ -1,3 +1,17 @@
+.red {
+    color: red;
+}
+.green {
+    color: green;
+}
+.blue {
+    color:blue;
+}
+.black {
+    color: black;
+}
+
+
 body {
     display: flex;
     justify-content: center;
