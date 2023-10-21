@@ -226,6 +226,9 @@ $(document).ready(function () {
     }
 
     function deleteAtCursor() {
+        if (currentPage == 'SCROLL'){
+            zoomScroll(-1);
+        }
         index = currentArray[2];
         currentArray[0].splice(index + 1, 1);
         currentArray[1].splice(index, 1);
@@ -240,8 +243,24 @@ $(document).ready(function () {
             } case 'AXES': {
                 axisValues[axisArrayIndex] = safeEval(currentArray[1].join(""));
                 break;
+            } case 'SCROLL' : {
+                zoomScroll(1)
             }
         }
+    }
+
+    function zoomScroll(direction) {
+        xStep = (axisValues[1] - axisValues[0]) / 5;
+        yStep = (axisValues[3] - axisValues[2]) / 5;
+        
+        axisValues[0] += direction * xStep;
+        axisValues[1] -= direction * xStep;
+
+        axisValues[2] += direction * yStep;
+        axisValues[3] -= direction * yStep;
+        
+        evaluateGraphs();
+        displayGraphs();
     }
 
     function handleMathButtonInput(buttonString, currentArray) {
