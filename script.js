@@ -154,7 +154,7 @@ $(document).ready(function () {
                 ySpan = axisValues[2] - axisValues[3];
                 axisValues[2] += direction * ySpan / 10;
                 axisValues[3] += direction * ySpan / 10;
-                
+                evaluateGraphs();
                 displayGraphs();
             }
         }
@@ -378,15 +378,19 @@ $(document).ready(function () {
 
     function displayGraphs() {
         for (i = 0; i < graphs.length; i++) {
+            ctx.font = "10px monospace";
             switch (i) {
                 case 0: {
                     ctx.strokeStyle = 'red';
+                    ctx.strokeText('F1:' + functionArray1[0].join('').replace('>',""),0, 10)
                     break;
                 } case 1: {
                     ctx.strokeStyle = 'green';
+                    ctx.strokeText('F2:' + functionArray2[0].join('').replace('>', ""), 0, 20)
                     break;
                 } case 2: {
                     ctx.strokeStyle = 'blue';
+                    ctx.strokeText('F3:' + functionArray3[0].join('').replace('>', ""), 0, 30)
                     break;
                 }
             }
