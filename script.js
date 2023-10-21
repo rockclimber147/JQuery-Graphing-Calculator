@@ -6,7 +6,7 @@ $(document).ready(function () {
     let calculatorDisplayWidth = $('#calculator').width();
     canvas.width = calculatorDisplayWidth;
     canvas.height = calculatorDisplayWidth * 0.75;
-    
+
     let screenText = $('#screen_text');
     screenText.width(calculatorDisplayWidth);
     screenText.height(calculatorDisplayWidth * .75);
@@ -37,14 +37,14 @@ $(document).ready(function () {
         'sqrt': "Math.sqrt(",
         'ANS': 'lastAnswerValue'
     }
-    
+
     var currentPage = 'HOME';
 
     var lastAnswerValue = 0;
     var calculationArray = [['>'], [], 0];
     // store trash inputs
     var garbageArray = [['>'], [], 0];
-    
+
 
     // F(X) page
     var functionArray1 = [['>'], [], 0];
@@ -118,6 +118,14 @@ $(document).ready(function () {
     }
 
     function moveHorizontalCursor(direction) {
+        if (currentPage == 'SCROLL') {
+            xSpan = axisValues[1] - axisValues[0];
+            axisValues[0] += direction * xSpan / 10;
+            axisValues[1] += direction * xSpan / 10;
+            evaluateGraphs();
+            displayGraphs();
+        }
+
         // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
         currentArray[2] += direction;
         if (currentArray[2] > currentArray[1].length) {
@@ -132,18 +140,22 @@ $(document).ready(function () {
         currentArray[0].splice(currentArray[2], 0, '>');
     }
 
-    function moveVerticalCursor(direction){
+    function moveVerticalCursor(direction) {
         switch (currentPage) {
-            case 'F(X)' : {
+            case 'F(X)': {
                 functionArrayIndex = (functionArrayIndex + direction + functionArrays.length) % functionArrays.length;
                 currentArray = functionArrays[functionArrayIndex];
                 break;
-            } case 'AXES' : {
+            } case 'AXES': {
                 axisArrayIndex = (axisArrayIndex + direction + axisArrays.length) % axisArrays.length;
                 currentArray = axisArrays[axisArrayIndex];
                 break;
-            } case 'SCROLL' : {
-                // TODO
+            } case 'SCROLL': {
+                ySpan = axisValues[2] - axisValues[3];
+                axisValues[2] += direction * ySpan / 10;
+                axisValues[3] += direction * ySpan / 10;
+                
+                displayGraphs();
             }
         }
     }
@@ -220,12 +232,12 @@ $(document).ready(function () {
         moveHorizontalCursor(0);
     }
 
-    function hitEnter(){
+    function hitEnter() {
         switch (currentPage) {
-            case "HOME" : {
+            case "HOME": {
                 lastAnswerValue = safeEval(currentArray[1].join(""));
                 break;
-            } case 'AXES' : {
+            } case 'AXES': {
                 axisValues[axisArrayIndex] = safeEval(currentArray[1].join(""));
                 break;
             }
@@ -258,19 +270,17 @@ $(document).ready(function () {
     }
     // Graphing
 
-    function evaluateGraphs(){
+    function evaluateGraphs() {
         // for each function array
         for (i = 0; i < functionArrays.length; i += 1) {
             evalString = functionArrays[i][1].join('');
             // evalString = 'Math.sin(x)';
             xStep = (axisValues[1] - axisValues[0]) / canvas.width;
-            console.log(xStep);
             graphIndex = 0;
             // evaluate the correspondng graph
-            for (x = axisValues[0]; x < axisValues[1]; x += xStep){
+            for (x = axisValues[0]; x < axisValues[1]; x += xStep) {
                 graphs[i][graphIndex] = safeEval(evalString);
                 graphIndex += 1;
-                console.log(x);
             }
             console.log(graphs[i]);
         }
@@ -280,59 +290,95 @@ $(document).ready(function () {
 
     function updateDisplay() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        switch (currentPage){
-            case 'HOME' : {
+        switch (currentPage) {
+            case 'HOME': {
                 displayHome();
                 break;
-            } case 'F(X)' : {
+            } case 'F(X)': {
                 break;
-            } case 'AXES' : {
+            } case 'AXES': {
                 break;
-            } case 'GRAPH' : {
+            } case 'GRAPH': {
                 displayGraphs();
                 break;
-            } case 'SCROLL' : {
+            } case 'SCROLL': {
+                displayGraphs();
+                displayScrollOverlay();
                 break;
             }
         }
     }
+    function displayScrollOverlay() {
+        // left
+        ctx.beginPath();
+        ctx.moveTo(0, canvas.height / 2);
+        ctx.lineTo(10, canvas.height / 2 - 10);
+        ctx.lineTo(10, canvas.height / 2 + 10);
+        ctx.lineTo(0, canvas.height / 2);
+        ctx.fill();
 
-    function displayHome(){
+        // right
+        ctx.beginPath();
+        ctx.moveTo(canvas.width, canvas.height / 2);
+        ctx.lineTo(canvas.width - 10, canvas.height / 2 - 10);
+        ctx.lineTo(canvas.width - 10, canvas.height / 2 + 10);
+        ctx.lineTo(canvas.width, canvas.height / 2);
+        ctx.fill();
+
+        // up
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, 0);
+        ctx.lineTo(canvas.width / 2 - 10, 10);
+        ctx.lineTo(canvas.width / 2 + 10, 10);
+        ctx.lineTo(canvas.width / 2, 0);
+        ctx.fill();
+
+        // down
+        ctx.beginPath();
+        ctx.moveTo(canvas.width / 2, canvas.height);
+        ctx.lineTo(canvas.width / 2 - 10, canvas.height - 10);
+        ctx.lineTo(canvas.width / 2 + 10, canvas.height - 10);
+        ctx.lineTo(canvas.width / 2, canvas.height);
+        ctx.fill();
+
+    }
+
+    function displayHome() {
         // TODO
     }
 
-    function displayGraphs(){
-        for (i = 0; i < graphs.length; i++){
-            switch(i){
-                case 0 : {
+    function displayGraphs() {
+        for (i = 0; i < graphs.length; i++) {
+            switch (i) {
+                case 0: {
                     ctx.strokeStyle = 'red';
                     break;
-                } case 1 : {
+                } case 1: {
                     ctx.strokeStyle = 'green';
                     break;
-                }case 2 : {
+                } case 2: {
                     ctx.strokeStyle = 'blue';
                     break;
                 }
             }
-            if (!graphs[i].includes(undefined)){
+            if (!graphs[i].includes(undefined)) {
                 displayGraph(graphs[i]);
             }
         }
     }
 
-    function displayGraph(graphArray){
+    function displayGraph(graphArray) {
         ctx.beginPath();
         ctx.moveTo(0, getYCoord(graphArray[0]));
         pixel = 0;
-        for (value of graphArray){
+        for (value of graphArray) {
             ctx.lineTo(pixel, getYCoord(value));
             pixel += 1;
         }
         ctx.stroke();
     }
 
-    function getYCoord(actualY){
+    function getYCoord(actualY) {
         yMin = axisValues[2];
         yMax = axisValues[3];
         // Y increases in the negative direction so invert the ign of the span
@@ -363,7 +409,7 @@ $(document).ready(function () {
         array[2] = 0;
     }
 
-    function safeEval(toEval){
+    function safeEval(toEval) {
         try {
             result = eval(toEval);
             return result;
@@ -394,5 +440,5 @@ $(document).ready(function () {
     }
 
     canvas.width = 400;
-    
+
 });
