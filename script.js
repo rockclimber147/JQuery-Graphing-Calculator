@@ -1,9 +1,10 @@
 $(document).ready(function () {
 
     let canvas = $("#screen_canvas").get(0);
-    var ctx = canvas.getContext("2d");
+    jQuery(canvas).hide();
+    let ctx = canvas.getContext("2d");
 
-    var screenTextDisplay = $('#screen_text').get(0);
+    let screenTextDisplay = $('#screen_text').get(0);
 
     let calculatorDisplayWidth = $('#calculator').width();
     canvas.width = calculatorDisplayWidth;
@@ -77,6 +78,8 @@ $(document).ready(function () {
 
     // currentArray points to calculationArray by default
     var currentArray = calculationArray;
+
+    displayHome();
 
     // button press handling
     $("button").click(function () {
@@ -163,6 +166,16 @@ $(document).ready(function () {
         }
     }
 
+    function showCanvas(){
+        jQuery(canvas).show();
+        jQuery(screenTextDisplay).hide();
+    }
+
+    function showScreenText(){
+        jQuery(screenTextDisplay).show();
+        jQuery(canvas).hide();        
+    }
+
     function navigateTo(page) {
         // set buttons to darkgrey
         $('.nav_button').each(function () {
@@ -177,18 +190,22 @@ $(document).ready(function () {
             $('button:contains(' + page + ')').css('background-color', 'yellow');
             switch (page) {
                 case 'F(X)': {
+                    showScreenText();
                     currentPage = 'F(X)';
                     currentArray = functionArrays[functionArrayIndex];
                     break;
                 } case 'AXES': {
+                    showScreenText();
                     currentPage = 'AXES';
                     currentArray = axisArrays[axisArrayIndex];
                     break;
                 } case 'GRAPH': {
+                    showCanvas();
                     currentPage = 'GRAPH';
                     evaluateGraphs();
                     break;
                 } case 'SCROLL': {
+                    showCanvas();
                     currentPage = 'SCROLL';
                     break;
                 }
