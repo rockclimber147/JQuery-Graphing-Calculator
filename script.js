@@ -129,6 +129,7 @@ $(document).ready(function () {
             axisValues[1] += direction * xSpan / 10;
             evaluateGraphs();
             displayGraphs();
+            return;
         }
 
         // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
@@ -162,6 +163,7 @@ $(document).ready(function () {
                 axisValues[3] += direction * ySpan / 10;
                 evaluateGraphs();
                 displayGraphs();
+                break;
             }
         }
     }
@@ -258,6 +260,7 @@ $(document).ready(function () {
 
         if (currentPage == 'SCROLL'){
             zoomScroll(-1);
+            return;
         }
         index = currentArray[2];
         currentArray[0].splice(index + 1, 1);
@@ -274,7 +277,8 @@ $(document).ready(function () {
                 axisValues[axisArrayIndex] = safeEval(currentArray[1].join(""));
                 break;
             } case 'SCROLL' : {
-                zoomScroll(1)
+                zoomScroll(1);
+                break;
             }
         }
     }
