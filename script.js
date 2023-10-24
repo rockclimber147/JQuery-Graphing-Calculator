@@ -16,12 +16,11 @@ $(document).ready(function () {
     screenText.height(calculatorDisplayWidth * .75);
 
     // For converting input strings
-    let globalLiterals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')', '.', '+', '-','*'];
-    let displayLiterals = ['÷', 'ANS'];
+    let globalLiterals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')', '.', '+', '-', '*'];
+    let displayLiterals = ['÷', 'ANS', 'π'];
     let displayDict = {
         'e^x': 'e^',
         'ln': "log(",
-        'log10': 'log(',
         'sin': "sin(",
         'cos': "cos(",
         'tan': "tan(",
@@ -31,7 +30,7 @@ $(document).ready(function () {
     let evalDict = {
         'e^x': 'Math.E**',
         'ln': "Math.log(",
-        'log10': 'Math.log10(',
+        'π': 'Math.PI',
         'sin': "Math.sin(",
         'cos': "Math.cos(",
         'tan': "Math.tan(",
@@ -74,8 +73,7 @@ $(document).ready(function () {
     var f2Values = Array(canvas.width).fill(0);
     var f3Values = Array(canvas.width).fill(0);
     var graphs = [f1Values, f2Values, f3Values];
-    var graphArrayIndex = 0;
-    var graphXPointer = 0;
+    var graphXPointer = Math.round(canvas.width / 2);
 
     // currentArray points to calculationArray by default
     var currentArray = calculationArray;
@@ -124,27 +122,32 @@ $(document).ready(function () {
     }
 
     function moveHorizontalCursor(direction) {
-        if (currentPage == 'SCROLL') {
-            xSpan = axisValues[1] - axisValues[0];
-            axisValues[0] += direction * xSpan / 10;
-            axisValues[1] += direction * xSpan / 10;
-            evaluateGraphs();
-            displayGraphs();
-            return;
+        switch (currentPage) {
+            case 'SCROLL': {
+                xSpan = axisValues[1] - axisValues[0];
+                axisValues[0] += direction * xSpan / 10;
+                axisValues[1] += direction * xSpan / 10;
+                evaluateGraphs();
+                displayGraphs();
+                return;
+            } case 'GRAPH': {
+                graphXPointer = (graphXPointer + direction + canvas.width) % canvas.width;
+                return;
+            } default: {
+                // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
+                currentArray[2] += direction;
+                if (currentArray[2] > currentArray[1].length) {
+                    currentArray[2] = currentArray[1].length;
+                }
+                if (currentArray[2] <= 0) {
+                    currentArray[2] = 0;
+                }
+                // remove cursor
+                currentArray[0].splice(currentArray[0].indexOf('>'), 1);
+                // add cursor at new position
+                currentArray[0].splice(currentArray[2], 0, '>');
+            }
         }
-
-        // increment pointer and make sure it's within the bounds of the equation tokens array length (display token length will change)
-        currentArray[2] += direction;
-        if (currentArray[2] > currentArray[1].length) {
-            currentArray[2] = currentArray[1].length;
-        }
-        if (currentArray[2] <= 0) {
-            currentArray[2] = 0;
-        }
-        // remove cursor
-        currentArray[0].splice(currentArray[0].indexOf('>'), 1);
-        // add cursor at new position
-        currentArray[0].splice(currentArray[2], 0, '>');
     }
 
     function moveVerticalCursor(direction) {
@@ -165,18 +168,21 @@ $(document).ready(function () {
                 evaluateGraphs();
                 displayGraphs();
                 break;
+            } case 'GRAPH': {
+                functionArrayIndex = (functionArrayIndex + direction + functionArrays.length) % functionArrays.length;
+                break;
             }
         }
     }
 
-    function showCanvas(){
+    function showCanvas() {
         jQuery(canvas).show();
         jQuery(screenTextDisplay).hide();
     }
 
-    function showScreenText(){
+    function showScreenText() {
         jQuery(screenTextDisplay).show();
-        jQuery(canvas).hide();        
+        jQuery(canvas).hide();
     }
 
     function navigateTo(page) {
@@ -250,7 +256,7 @@ $(document).ready(function () {
 
     function deleteAtCursor() {
 
-        if (currentPage == 'SCROLL'){
+        if (currentPage == 'SCROLL') {
             zoomScroll(-1);
             return;
         }
@@ -267,11 +273,11 @@ $(document).ready(function () {
                 break;
             } case 'AXES': {
                 value = safeEval(currentArray[1].join(""));
-                if (value != undefined && isFinite(value)){
+                if (value != undefined && isFinite(value)) {
                     axisValues[axisArrayIndex] = value;
                 }
                 break;
-            } case 'SCROLL' : {
+            } case 'SCROLL': {
                 zoomScroll(1);
                 break;
             }
@@ -281,13 +287,13 @@ $(document).ready(function () {
     function zoomScroll(direction) {
         xStep = (axisValues[1] - axisValues[0]) / 5;
         yStep = (axisValues[3] - axisValues[2]) / 5;
-        
+
         axisValues[0] += direction * xStep;
         axisValues[1] -= direction * xStep;
 
         axisValues[2] += direction * yStep;
         axisValues[3] -= direction * yStep;
-        
+
         evaluateGraphs();
         displayGraphs();
     }
@@ -406,36 +412,36 @@ $(document).ready(function () {
         </p>`);
     }
 
-    function displayAxisText(){
+    function displayAxisText() {
         jQuery(screenTextDisplay).removeClass();
         jQuery(screenTextDisplay).addClass('black');
         jQuery(screenTextDisplay).empty();
         currentAxis = '';
         switch (axisArrayIndex) {
-            case 0 : {
+            case 0: {
                 currentAxis = 'xMin';
                 break;
-            } case 1 : {
+            } case 1: {
                 currentAxis = 'xMax';
                 break;
-            } case 2 : {
+            } case 2: {
                 currentAxis = 'yMin';
                 break;
-            } case 3 : {
+            } case 3: {
                 currentAxis = 'yMax';
                 break;
-            } 
+            }
         }
 
         jQuery(screenTextDisplay).append(`<div>xMin: ${axisValues[0]}</div>`);
         jQuery(screenTextDisplay).append(`<div>xMax: ${axisValues[1]}</div>`);
         jQuery(screenTextDisplay).append(`<div>yMin: ${axisValues[2]}</div>`);
         jQuery(screenTextDisplay).append(`<div>xMax: ${axisValues[3]}</div>`);
-        
+
         jQuery(screenTextDisplay).append(`<p>${currentAxis}: ${currentArray[0].join("")}</p>`);
     }
 
-    function displayFunctions(){
+    function displayFunctions() {
         jQuery(screenTextDisplay).removeClass();
         switch (functionArrayIndex) {
             case 0: {
@@ -450,7 +456,7 @@ $(document).ready(function () {
                 jQuery(screenTextDisplay).addClass('blue');
                 jQuery(screenTextDisplay).text('F3: ' + currentArray[0].join(''))
                 break;
-            } 
+            }
         }
     }
 
@@ -460,7 +466,7 @@ $(document).ready(function () {
             switch (i) {
                 case 0: {
                     ctx.strokeStyle = 'red';
-                    ctx.strokeText('F1:' + functionArray1[0].join('').replace('>',""),0, 10)
+                    ctx.strokeText('F1:' + functionArray1[0].join('').replace('>', ""), 0, 10)
                     break;
                 } case 1: {
                     ctx.strokeStyle = 'green';
@@ -476,6 +482,22 @@ $(document).ready(function () {
                 displayGraph(graphs[i]);
             }
         }
+        switch (functionArrayIndex) {
+            case 0: {
+                ctx.strokeStyle = 'red';
+                break;
+            } case 1: {
+                ctx.strokeStyle = 'green';
+                break;
+            } case 2: {
+                ctx.strokeStyle = 'blue';
+                break;
+            }
+        }
+        ctx.strokeText('X', graphXPointer - 4, getYCoord(graphs[functionArrayIndex][graphXPointer]) + 3);
+        ctx.strokeText('F' + functionArrayIndex, 2, canvas.height - 30)
+        ctx.strokeText("x:" + (axisValues[0] + (axisValues[1] - axisValues[0])*(graphXPointer / canvas.width)), 2, canvas.height - 20)
+        ctx.strokeText("y:" + graphs[functionArrayIndex][graphXPointer], 2, canvas.height - 10)
     }
 
     function displayGraph(graphArray) {
@@ -489,12 +511,12 @@ $(document).ready(function () {
         ctx.stroke();
     }
 
-    function displayAxes(){
+    function displayAxes() {
         // Y axis
         // if x== 0 is in domain
         ctx.strokeStyle = 'black';
-        if (axisValues[0] <= 0 && axisValues[1] >= 0){
-            
+        if (axisValues[0] <= 0 && axisValues[1] >= 0) {
+
             xSpan = axisValues[1] - axisValues[0];
             zeroPosition = -axisValues[0] / xSpan * canvas.width;
             ctx.beginPath();
@@ -502,7 +524,7 @@ $(document).ready(function () {
             ctx.lineTo(zeroPosition, canvas.height);
             ctx.stroke();
         }
-        if (axisValues[2] <= 0 && axisValues[3] >= 0){
+        if (axisValues[2] <= 0 && axisValues[3] >= 0) {
             zeroPosition = getYCoord(0);
             ctx.beginPath();
             ctx.moveTo(0, zeroPosition);
@@ -516,14 +538,14 @@ $(document).ready(function () {
         ctx.strokeText('Ymax: ' + formatAxisValueSciNotation(axisValues[3]), canvas.width - 100, canvas.height - 5);
     }
 
-    function formatAxisValueSciNotation(value){
+    function formatAxisValueSciNotation(value) {
         stringVal = value.toExponential();
         stringVal = stringVal.split('e');
-        if (!stringVal[0].includes('.')){
+        if (!stringVal[0].includes('.')) {
             stringVal[0] += '.';
         }
         stringVal[0] += '000';
-        stringVal[0] = stringVal[0].substring(0,5);
+        stringVal[0] = stringVal[0].substring(0, 5);
         return stringVal.join('*10^');
     }
 
@@ -549,6 +571,8 @@ $(document).ready(function () {
         lastAnswerValue = 0;
         // reset axes
         axisValues = [-10, 10, -10, 10];
+        graphXPointer = Math.round(canvas.width / 2);
+        evaluateGraphs();
     }
 
     function clearArray(array) {
