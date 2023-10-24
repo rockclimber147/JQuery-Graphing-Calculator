@@ -20,7 +20,7 @@ $(document).ready(function () {
     let displayLiterals = ['÷', 'ANS', 'π'];
     let displayDict = {
         'e^x': 'e^',
-        'ln': "log(",
+        'ln': "ln(",
         'sin': "sin(",
         'cos': "cos(",
         'tan': "tan(",
@@ -276,11 +276,25 @@ $(document).ready(function () {
                 if (value != undefined && isFinite(value)) {
                     axisValues[axisArrayIndex] = value;
                 }
+                validateAxes();
                 break;
             } case 'SCROLL': {
                 zoomScroll(1);
                 break;
             }
+        }
+    }
+
+    function validateAxes(){
+        if (axisValues[1] < axisValues[0]){
+            temp = axisValues[0];
+            axisValues[0] = axisValues[1];
+            axisValues[1] = temp;
+        }
+        if (axisValues[3] < axisValues[2]){
+            temp = axisValues[2];
+            axisValues[2] = axisValues[3];
+            axisValues[3] = temp;
         }
     }
 
@@ -336,7 +350,6 @@ $(document).ready(function () {
                 graphs[i][graphIndex] = safeEval(evalString);
                 graphIndex += 1;
             }
-            console.log(graphs[i]);
         }
     }
 
@@ -495,7 +508,7 @@ $(document).ready(function () {
             }
         }
         ctx.strokeText('X', graphXPointer - 4, getYCoord(graphs[functionArrayIndex][graphXPointer]) + 3);
-        ctx.strokeText('F' + functionArrayIndex, 2, canvas.height - 30)
+        ctx.strokeText('F' + (functionArrayIndex + 1), 2, canvas.height - 30)
         ctx.strokeText("x:" + (axisValues[0] + (axisValues[1] - axisValues[0])*(graphXPointer / canvas.width)), 2, canvas.height - 20)
         ctx.strokeText("y:" + graphs[functionArrayIndex][graphXPointer], 2, canvas.height - 10)
     }
@@ -597,7 +610,8 @@ $(document).ready(function () {
         console.log("\n");
         console.log("canvas width: ", canvas.width);
         console.log("canvas height: ", canvas.height);
-        console.log(currentPage);
+        console.log("Current page: ", currentPage);
+        console.log();
         console.log("display array  : ", currentArray[0]);
         console.log("display string : ", currentArray[0].join(''));
         console.log("eval array     : ", currentArray[1]);
@@ -612,6 +626,5 @@ $(document).ready(function () {
         console.log('axes [x0, x1, y0, y1]: ', axisValues);
     }
 
-    canvas.width = 400;
 
 });
