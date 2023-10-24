@@ -15,8 +15,8 @@ $(document).ready(function () {
     screenText.height(calculatorDisplayWidth * .75);
 
     // For converting input strings
-    let globalLiterals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')', '.', '+', '-'];
-    let displayLiterals = ['x', '÷', 'ANS'];
+    let globalLiterals = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')', '.', '+', '-','*'];
+    let displayLiterals = ['÷', 'ANS'];
     let displayDict = {
         'e^x': 'e^',
         'ln': "log(",
