@@ -399,7 +399,11 @@ $(document).ready(function () {
     function displayHome() {
         jQuery(screenTextDisplay).removeClass();
         jQuery(screenTextDisplay).addClass('black');
-        jQuery(screenTextDisplay).text(currentArray[0].join(''));
+        jQuery(screenTextDisplay).empty();
+        jQuery(screenTextDisplay).append(currentArray[0].join(''));
+        jQuery(screenTextDisplay).append(`<p style="text-align:right;">
+        Last Answer: ${lastAnswerValue}
+        </p>`);
     }
 
     function displayAxisText(){
