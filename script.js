@@ -3,6 +3,7 @@ $(document).ready(function () {
     let canvas = $("#screen_canvas").get(0);
     jQuery(canvas).hide();
     let ctx = canvas.getContext("2d");
+    ctx.font = "10px monospace";
 
     let screenTextDisplay = $('#screen_text').get(0);
 
@@ -249,15 +250,6 @@ $(document).ready(function () {
 
     function deleteAtCursor() {
 
-
-
-
-
-        // TODO Figure out why zooming out breaks graph sometimes ------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
         if (currentPage == 'SCROLL'){
             zoomScroll(-1);
             return;
@@ -395,6 +387,9 @@ $(document).ready(function () {
         ctx.lineTo(canvas.width / 2, canvas.height);
         ctx.fill();
 
+        ctx.strokeStyle = 'black';
+        ctx.strokeText('Zoom In: ENTER', canvas.width - 100, 10)
+        ctx.strokeText('Zoom Out: DEL', canvas.width - 100, 20)
     }
 
     function displayHome() {
@@ -424,7 +419,6 @@ $(document).ready(function () {
     }
 
     function displayGraphs() {
-        ctx.font = "10px monospace";
         displayAxes();
         for (i = 0; i < graphs.length; i++) {
             switch (i) {
