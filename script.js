@@ -266,7 +266,10 @@ $(document).ready(function () {
                 lastAnswerValue = safeEval(currentArray[1].join(""));
                 break;
             } case 'AXES': {
-                axisValues[axisArrayIndex] = safeEval(currentArray[1].join(""));
+                value = safeEval(currentArray[1].join(""));
+                if (value != undefined && isFinite(value)){
+                    axisValues[axisArrayIndex] = value;
+                }
                 break;
             } case 'SCROLL' : {
                 zoomScroll(1);
@@ -343,6 +346,7 @@ $(document).ready(function () {
                 displayFunctions();
                 break;
             } case 'AXES': {
+                displayAxisText();
                 break;
             } case 'GRAPH': {
                 displayGraphs();
@@ -393,10 +397,38 @@ $(document).ready(function () {
     }
 
     function displayHome() {
-        
         jQuery(screenTextDisplay).removeClass();
         jQuery(screenTextDisplay).addClass('black');
         jQuery(screenTextDisplay).text(currentArray[0].join(''));
+    }
+
+    function displayAxisText(){
+        jQuery(screenTextDisplay).removeClass();
+        jQuery(screenTextDisplay).addClass('black');
+        jQuery(screenTextDisplay).empty();
+        currentAxis = '';
+        switch (axisArrayIndex) {
+            case 0 : {
+                currentAxis = 'xMin';
+                break;
+            } case 1 : {
+                currentAxis = 'xMax';
+                break;
+            } case 2 : {
+                currentAxis = 'yMin';
+                break;
+            } case 3 : {
+                currentAxis = 'yMax';
+                break;
+            } 
+        }
+
+        jQuery(screenTextDisplay).append(`<div>xMin: ${axisValues[0]}</div>`);
+        jQuery(screenTextDisplay).append(`<div>xMax: ${axisValues[1]}</div>`);
+        jQuery(screenTextDisplay).append(`<div>yMin: ${axisValues[2]}</div>`);
+        jQuery(screenTextDisplay).append(`<div>xMax: ${axisValues[3]}</div>`);
+        
+        jQuery(screenTextDisplay).append(`<p>${currentAxis}: ${currentArray[0].join("")}</p>`);
     }
 
     function displayFunctions(){
