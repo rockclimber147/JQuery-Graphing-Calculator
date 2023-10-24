@@ -188,7 +188,7 @@ $(document).ready(function () {
     function navigateTo(page) {
         // set buttons to dark gray
         $('.nav_button').each(function () {
-            $(this).css("background-color", "dark grey");
+            $(this).css("background-color", "darkgrey");
         });
         // on double tap, go HOME
         if (currentPage == page) {
