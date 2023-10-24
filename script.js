@@ -186,9 +186,9 @@ $(document).ready(function () {
     }
 
     function navigateTo(page) {
-        // set buttons to darkgrey
+        // set buttons to dark gray
         $('.nav_button').each(function () {
-            $(this).css("background-color", "darkgrey");
+            $(this).css("background-color", "dark grey");
         });
         // on double tap, go HOME
         if (currentPage == page) {
@@ -237,12 +237,12 @@ $(document).ready(function () {
                 deleteAtCursor();
                 break;
             } case 'X': {
-                handleXvarInput();
+                handleXVarInput();
             }
         }
     }
 
-    function handleXvarInput() {
+    function handleXVarInput() {
         if (currentPage != 'F(X)') {
             return;
         }
@@ -345,7 +345,7 @@ $(document).ready(function () {
             // evalString = 'Math.sin(x)';
             xStep = (axisValues[1] - axisValues[0]) / canvas.width;
             graphIndex = 0;
-            // evaluate the correspondng graph
+            // evaluate the corresponding graph
             for (x = axisValues[0]; x < axisValues[1]; x += xStep) {
                 graphs[i][graphIndex] = safeEval(evalString);
                 graphIndex += 1;
