@@ -188,7 +188,7 @@ $(document).ready(function () {
     function navigateTo(page) {
         // set buttons to dark gray
         $('.nav_button').each(function () {
-            $(this).css("background-color", "darkgrey");
+            $(this).css("background-color", "darkgray");
         });
         // on double tap, go HOME
         if (currentPage == page) {
@@ -313,6 +313,9 @@ $(document).ready(function () {
     }
 
     function handleMathButtonInput(buttonString, currentArray) {
+        if (currentPage == 'HOME' || currentPage == 'GRAPH'){
+            return;
+        }
         index = currentArray[2];
         displayArray = currentArray[0];
         evalArray = currentArray[1];
