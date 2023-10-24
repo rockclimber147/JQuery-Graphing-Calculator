@@ -424,9 +424,9 @@ $(document).ready(function () {
     }
 
     function displayGraphs() {
+        ctx.font = "10px monospace";
         displayAxes();
         for (i = 0; i < graphs.length; i++) {
-            ctx.font = "10px monospace";
             switch (i) {
                 case 0: {
                     ctx.strokeStyle = 'red';
@@ -478,7 +478,23 @@ $(document).ready(function () {
             ctx.moveTo(0, zeroPosition);
             ctx.lineTo(canvas.width, zeroPosition);
             ctx.stroke();
-        }  
+        }
+
+        ctx.strokeText('Xmin: ' + formatAxisValueSciNotation(axisValues[0]), canvas.width - 100, canvas.height - 35);
+        ctx.strokeText('Xmax: ' + formatAxisValueSciNotation(axisValues[1]), canvas.width - 100, canvas.height - 25);
+        ctx.strokeText('Ymin: ' + formatAxisValueSciNotation(axisValues[2]), canvas.width - 100, canvas.height - 15);
+        ctx.strokeText('Ymax: ' + formatAxisValueSciNotation(axisValues[3]), canvas.width - 100, canvas.height - 5);
+    }
+
+    function formatAxisValueSciNotation(value){
+        stringVal = value.toExponential();
+        stringVal = stringVal.split('e');
+        if (!stringVal[0].includes('.')){
+            stringVal[0] += '.';
+        }
+        stringVal[0] += '000';
+        stringVal[0] = stringVal[0].substring(0,5);
+        return stringVal.join('*10^');
     }
 
     function getYCoord(actualY) {
