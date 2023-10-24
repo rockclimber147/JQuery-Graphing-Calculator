@@ -424,6 +424,7 @@ $(document).ready(function () {
     }
 
     function displayGraphs() {
+        displayAxes();
         for (i = 0; i < graphs.length; i++) {
             ctx.font = "10px monospace";
             switch (i) {
@@ -456,6 +457,28 @@ $(document).ready(function () {
             pixel += 1;
         }
         ctx.stroke();
+    }
+
+    function displayAxes(){
+        // Y axis
+        // if x== 0 is in domain
+        ctx.strokeStyle = 'black';
+        if (axisValues[0] <= 0 && axisValues[1] >= 0){
+            
+            xSpan = axisValues[1] - axisValues[0];
+            zeroPosition = -axisValues[0] / xSpan * canvas.width;
+            ctx.beginPath();
+            ctx.moveTo(zeroPosition, 0);
+            ctx.lineTo(zeroPosition, canvas.height);
+            ctx.stroke();
+        }
+        if (axisValues[2] <= 0 && axisValues[3] >= 0){
+            zeroPosition = getYCoord(0);
+            ctx.beginPath();
+            ctx.moveTo(0, zeroPosition);
+            ctx.lineTo(canvas.width, zeroPosition);
+            ctx.stroke();
+        }  
     }
 
     function getYCoord(actualY) {
