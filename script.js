@@ -313,7 +313,7 @@ $(document).ready(function () {
     }
 
     function handleMathButtonInput(buttonString, currentArray) {
-        if (currentPage == 'HOME' || currentPage == 'GRAPH'){
+        if (currentPage == 'SCROLL' || currentPage == 'GRAPH'){
             return;
         }
         index = currentArray[2];
